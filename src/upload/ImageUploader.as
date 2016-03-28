@@ -28,7 +28,7 @@ package upload
 		 * */
 		public function set callBackFunction(value:Function):void
 		{
-			_callBackFunction=value;
+			_callBackFunction = value;
 		}
 
 		private var _onProgress:Function;
@@ -39,7 +39,7 @@ package upload
 		 * */
 		public function set onProgress(value:Function):void
 		{
-			_onProgress=value;
+			_onProgress = value;
 		}
 
 		/**
@@ -49,13 +49,23 @@ package upload
 		 * */
 		public function upload(data:BitmapData, callBack:Function):void
 		{
-			_callBackFunction=callBack;
+			_callBackFunction = callBack;
 
-			//使用异步解码器
-			var asyncEncoder:JPEGAsyncEncoder=new JPEGAsyncEncoder(100);
-			asyncEncoder.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
-			asyncEncoder.addEventListener(JPEGAsyncCompleteEvent.JPEGASYNC_COMPLETE, asyncComplete);
-			asyncEncoder.encode(data);
+			if (data != null)
+			{
+				//使用异步解码器
+				var asyncEncoder:JPEGAsyncEncoder = new JPEGAsyncEncoder(100);//编码质量默认100，可根据需要自行修改
+					asyncEncoder.addEventListener(ProgressEvent.PROGRESS, onProgressHandler);
+					asyncEncoder.addEventListener(JPEGAsyncCompleteEvent.JPEGASYNC_COMPLETE, asyncComplete);
+					asyncEncoder.encode(data);
+			}
+			else
+			{
+				if (_callBackFunction != null)
+				{
+					_callBackFunction("");//传入无效的BitmapData对象，结果返回空
+				}
+			}
 		}
 
 		private function onProgressHandler(e:ProgressEvent):void
@@ -68,8 +78,8 @@ package upload
 
 		private function asyncComplete(e:JPEGAsyncCompleteEvent):void
 		{
-			var imgBase64Encoder:Base64Encoder=new Base64Encoder();
-			imgBase64Encoder.encodeBytes(e.ImageData);
+			var imgBase64Encoder:Base64Encoder = new Base64Encoder();
+				imgBase64Encoder.encodeBytes(e.ImageData);
 			
 			var result:String = imgBase64Encoder.toString();
 

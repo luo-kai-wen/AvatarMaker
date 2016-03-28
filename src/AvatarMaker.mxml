@@ -3,9 +3,10 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   xmlns:component="component.*"
+			   xmlns:components="flatspark.components.*"
 			   width="662" height="100%" 
 			   creationComplete="init()"
-			   frameRate="60" xmlns:components="flatspark.components.*">
+			   frameRate="60">
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
 		@namespace mx "library://ns.adobe.com/flex/mx";
@@ -21,22 +22,19 @@
 	<fx:Script>
 		<![CDATA[
 			import bmp.BMPDecoder;
-			
 			import flatspark.enums.BrandColorEnum;
 			import flatspark.enums.ButtonSizeEnum;
 			import flatspark.utils.AwesomeUtils;
-			
 			import upload.ImageUploader;
 
-			private var _imgLoader:ImageUploader=new ImageUploader();
+			private var _imgLoader:ImageUploader = new ImageUploader();
 
 			/**
 			 * 图片数据成功加载到内存中，这时FileReference对象的data属性已经有图片的二进制数据
 			 * */
 			private var bmpDecoder:BMPDecoder;
-			private var fileFilter:FileFilter=new FileFilter("圖片", "*.jpg;*.png;*.gif;*.jpeg;*.bmp");
-
-			private var imageFile:FileReference=new FileReference();
+			private var fileFilter:FileFilter = new FileFilter("圖片", "*.jpg;*.png;*.gif;*.jpeg;*.bmp");
+			private var imageFile:FileReference = new FileReference();
 			private var viewTimer:Timer;
 
 			protected function chooseFile_clickHandler(event:MouseEvent):void
@@ -65,7 +63,8 @@
 			 * */
 			protected function saveBtn_clickHandler(event:MouseEvent):void
 			{
-				var imgData:BitmapData=imgHd.getCropData();
+				var imgData:BitmapData = imgHd.getCropData();
+				
 				_imgLoader.upload(imgData, imgLoaded);
 			}
 
@@ -76,32 +75,32 @@
 
 			private function init():void
 			{
-				imageFile=new FileReference();
+				imageFile = new FileReference();
 				imageFile.addEventListener(Event.SELECT, onFileSelectHandler, false, 0, true);
 				imageFile.addEventListener(Event.COMPLETE, onImageDataLoadedHandler, false, 0, true);
 
-				viewTimer=new Timer(100);
+				viewTimer = new Timer(100);
 				viewTimer.addEventListener(TimerEvent.TIMER, updatePreviewWindow, false, 0, true);
 				viewTimer.start();
 
-				_imgLoader.onProgress=onEcodingHandler;
+				_imgLoader.onProgress = onEcodingHandler;
 			}
 
 			private function onEcodingHandler(value:Number):void
 			{
 				if (value >= 1)
 				{
-					saveBtn.label="保存";
+					saveBtn.label = "保存";
 				}
 				else
 				{
-					saveBtn.label="編碼中" + Math.round(value * 100) + "%";
+					saveBtn.label = "編碼中" + Math.round(value * 100) + "%";
 				}
 			}
 
 			private function onFileSelectHandler(event:Event):void
 			{
-				img.visible=false;
+				img.visible = false;
 				//选择文件后，把图片加载到内存中
 
 				try
@@ -110,9 +109,9 @@
 				}
 				catch (e:*)
 				{
-					roomInBtn.enabled=false;
-					roomOutBtn.enabled=false;
-					saveBtn.enabled=false;
+					roomInBtn.enabled = false;
+					roomOutBtn.enabled = false;
+					saveBtn.enabled = false;
 					return;
 				}
 			}
@@ -123,46 +122,48 @@
 				{
 					if (bmpDecoder == null)
 					{
-						bmpDecoder=new BMPDecoder();
+						bmpDecoder = new BMPDecoder();
 					}
 
-					img.data=new Bitmap(bmpDecoder.decode(imageFile.data));
+					img.data = new Bitmap(bmpDecoder.decode(imageFile.data));
 				}
 				else
 				{
 					//把之前的缓存清掉
 					if (img.data)
 					{
-						img.data=null;
+						img.data = null;
 					}
 
-					img.source=imageFile.data;
+					img.source = imageFile.data;
 				}
 
-				img.visible=true;
+				img.visible = true;
 
-				roomInBtn.enabled=true;
-				roomOutBtn.enabled=true;
-				saveBtn.enabled=true;
+				roomInBtn.enabled = true;
+				roomOutBtn.enabled = true;
+				saveBtn.enabled = true;
 			}
 
 			private function updatePreviewWindow(e:TimerEvent=null):void
 			{
-				var imgData:BitmapData=imgHd.getCropData();
+				var imgData:BitmapData = imgHd.getCropData();
 
 				if (imgData)
 				{
-					size130.source=new Bitmap(imgData);
-					size70.source=new Bitmap(imgData);
-					size50.source=new Bitmap(imgData);
+					size130.source = new Bitmap(imgData);
+					size70.source = new Bitmap(imgData);
+					size50.source = new Bitmap(imgData);
 				}
 			}
 		]]>
 	</fx:Script>
-
+	<!--选择按钮，文字提示区域-->
 	<components:ButtonIcon label="選擇圖片" id="chooseFile" width="112" iconFont="{AwesomeUtils.fa_arrow_circle_down}" height="{ButtonSizeEnum.Normal}" brand="{BrandColorEnum.Success}" top="10" left="10" click="chooseFile_clickHandler(event)"/>
 	<s:Label text="支持JPG，GIF，PNG，BMP圖片格式" left="10" top="60"
 			 fontSize="14" paddingLeft="10" color="0x999999"/>
+	
+	<!--图片操作区域-->
 	<component:ContentHolder id="imgHd" width="{imgMasker.width}" height="{imgMasker.height}"
 							 contentMasker="{imgMasker}" maintainAspectRatio="false" top="100"
 							 left="10">
@@ -174,6 +175,7 @@
 							 mouseEnabled="false" cropHeight="130" cropWidth="130"
 							 top="100" left="10"/>
 
+	<!--实时预览区域-->
 	<s:Group top="100" left="430">
 		<s:Label text="預覽" color="0x999999" fontSize="14"/>
 		<s:Image id="size130" width="130" height="130"
@@ -192,6 +194,7 @@
 				 top="260" left="80"/>
 	</s:Group>
 
+	<!--按钮区域-->
 	<s:HGroup top="518" left="10" gap="10">
 		<components:ButtonIcon label="缩小" id="roomOutBtn" enabled="false" iconFont="{AwesomeUtils.fa_search_minus}" height="{ButtonSizeEnum.Normal}" brand="{BrandColorEnum.Success}" click="roomOutBtn_clickHandler(event)"/>
 		<components:ButtonIcon label="放大" id="roomInBtn" enabled="false" iconFont="{AwesomeUtils.fa_search_plus}" height="{ButtonSizeEnum.Normal}" brand="{BrandColorEnum.Success}" click="roomInBtn_clickHandler(event)"/>

@@ -1,11 +1,10 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Copyright © 2015 FenHongXiang                                              */
-/* 深圳粉红象科技有限公司                                                                										  */
-/* www.fenhongxiang.com                                                       */
-/* All rights reserved.                                                       */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
+//------------------------------------------------------------------------------
+//
+//   Copyright 2016 www.fenhongxiang.com 
+//   All rights reserved. 
+//   By :ljh 
+//
+//------------------------------------------------------------------------------
 
 package upload
 {
@@ -17,14 +16,16 @@ package upload
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
-	
 	import mx.controls.Alert;
-
-	final public class JavaImageUploader extends ImageUploader
+	
+	public final  class JavaImageUploader extends ImageUploader
 	{
-		static private const SERVERLET_URL:String="http://localhost:80/UploadServer/UploadImageData";
+		private static  const SERVERLET_URL:String="http://localhost:80/UploadServer/UploadImageData";
+		private static  var _urlLoader:URLLoader;
 
-		static private var _urlLoader:URLLoader;
+		public function JavaImageUploader()
+		{
+		}
 
 		override public function upload(data:BitmapData):void
 		{
@@ -33,18 +34,20 @@ package upload
 		
 		private function onDataEncoded(data:String):void
 		{
-			var request:URLRequest=new URLRequest(SERVERLET_URL);
-				request.method=URLRequestMethod.POST;
+			var request:URLRequest = new URLRequest(SERVERLET_URL);
+				request.method = URLRequestMethod.POST;
 			
 			var _urlData:URLVariables = new URLVariables();
 				_urlData.bitmap_data = data;
 			
-			request.data=_urlData;
-			_urlLoader=new URLLoader()
+			request.data = _urlData;
+			
+			_urlLoader = new URLLoader()
 			_urlLoader.addEventListener(Event.COMPLETE, function uploadComplete(e:Event):void
 			{
 				Alert.show(e.target.data.toString());
 			});
+			
 			_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, function errorHandler(e:IOErrorEvent):void
 			{
 				Alert.show(e.text);
@@ -56,10 +59,6 @@ package upload
 			});
 			
 			_urlLoader.load(request);
-		}
-
-		public function JavaImageUploader()
-		{
 		}
 	}
 }

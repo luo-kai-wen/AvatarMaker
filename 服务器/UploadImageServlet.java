@@ -76,16 +76,9 @@ public class UploadImageServlet extends HttpServlet
         BASE64Decoder decoder = new BASE64Decoder();
 
         //Base64解码
-         byte[] b = decoder.decodeBuffer(bitmap_data);
-            for(int i=0;i<b.length;++i)
-            {
-                if(b[i]<0)
-                {//调整异常数据
-                    b[i]+=256;
-                }
-            }
+        byte[] b = decoder.decodeBuffer(bitmap_data);
             
-        BufferedImage img=ImageIO.read(new ByteArrayInputStream(b)); 
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(b)); 
 
 		try 
 		{   
